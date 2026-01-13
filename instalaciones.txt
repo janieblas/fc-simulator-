@@ -1,0 +1,14 @@
+Lib SDL2
+sudo apt update
+sudo apt install libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsdl2-mixer-dev
+
+compilar
+gcc main.c -o mi_juego $(sdl2-config --cflags --libs)
+o
+gcc main.c -o mi_juego -I/usr/include/SDL2 -L/usr/lib/x86_64-linux-gnu -lSDL2 -lSDL2main
+
+User sessions running outdated binaries:
+ myname @ session #2: login[847]
+ myname @ session #4: apt[2496]
+ myname @ session #6: sshd[1501]
+ myname @ user manager service: systemd[994]
