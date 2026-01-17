@@ -1,0 +1,1087 @@
+<sdf version='1.7'>
+  <world name='default'>
+    <light name='sun' type='directional'>
+      <cast_shadows>1</cast_shadows>
+      <pose>0 0 10 0 -0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
+    <model name='ground_plane'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <contact>
+              <collide_bitmask>65535</collide_bitmask>
+              <ode/>
+            </contact>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>20000 20000</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grass</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type='adiabatic'/>
+    <physics type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <audio>
+      <device>default</device>
+    </audio>
+    <wind/>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+    <model name='rc_cessna'>
+      <pose>0.398594 -0.010765 0.246 0 -0 0</pose>
+      <link name='base_link'>
+        <pose>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>1.5</mass>
+          <inertia>
+            <ixx>0.197563</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.145893</iyy>
+            <iyz>0</iyz>
+            <izz>0.1477</izz>
+          </inertia>
+        </inertial>
+        <collision name='fuselodge_collision'>
+          <pose>-0.14 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.65 0.08 0.1</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <max_vel>10</max_vel>
+                <min_depth>0.01</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='wings_collision'>
+          <pose>-0.01 0 0.07 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.1 1 0.01</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <max_vel>10</max_vel>
+                <min_depth>0.01</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='base_link_visual'>
+          <pose>0.07 0 -0.08 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>0.1 0.1 0.1</scale>
+              <uri>https://fuel.ignitionrobotics.org/1.0/px4/models/rc_cessna/1/files/meshes/body.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.175 0.175 0.175 1</ambient>
+            <diffuse>0.175 0.175 0.175 1</diffuse>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <sensor name='imu_sensor' type='imu'>
+          <always_on>1</always_on>
+          <update_rate>250</update_rate>
+          <imu>
+            <angular_velocity>
+              <x>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.0003394</stddev>
+                  <dynamic_bias_stddev>3.8785e-05</dynamic_bias_stddev>
+                  <dynamic_bias_correlation_time>1000</dynamic_bias_correlation_time>
+                </noise>
+              </x>
+              <y>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.0003394</stddev>
+                  <dynamic_bias_stddev>3.8785e-05</dynamic_bias_stddev>
+                  <dynamic_bias_correlation_time>1000</dynamic_bias_correlation_time>
+                </noise>
+              </y>
+              <z>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.0003394</stddev>
+                  <dynamic_bias_stddev>3.8785e-05</dynamic_bias_stddev>
+                  <dynamic_bias_correlation_time>1000</dynamic_bias_correlation_time>
+                </noise>
+              </z>
+            </angular_velocity>
+            <linear_acceleration>
+              <x>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.004</stddev>
+                  <dynamic_bias_stddev>0.006</dynamic_bias_stddev>
+                  <dynamic_bias_correlation_time>300</dynamic_bias_correlation_time>
+                </noise>
+              </x>
+              <y>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.004</stddev>
+                  <dynamic_bias_stddev>0.006</dynamic_bias_stddev>
+                  <dynamic_bias_correlation_time>300</dynamic_bias_correlation_time>
+                </noise>
+              </y>
+              <z>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.004</stddev>
+                  <dynamic_bias_stddev>0.006</dynamic_bias_stddev>
+                  <dynamic_bias_correlation_time>300</dynamic_bias_correlation_time>
+                </noise>
+              </z>
+            </linear_acceleration>
+          </imu>
+        </sensor>
+        <sensor name='navsat_sensor' type='navsat'>
+          <always_on>1</always_on>
+          <update_rate>30</update_rate>
+          <gps/>
+        </sensor>
+        <sensor name='air_pressure_sensor' type='air_pressure'>
+          <always_on>1</always_on>
+          <update_rate>50</update_rate>
+          <air_pressure>
+            <pressure>
+              <noise type='gaussian'>
+                <mean>0</mean>
+                <stddev>0.01</stddev>
+              </noise>
+            </pressure>
+          </air_pressure>
+        </sensor>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <link name='airspeed'>
+        <pose>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.015</mass>
+          <inertia>
+            <ixx>1e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1e-05</iyy>
+            <iyz>0</iyz>
+            <izz>1e-05</izz>
+          </inertia>
+        </inertial>
+        <visual name='airspeed_visual'>
+          <geometry>
+            <cylinder>
+              <radius>0.01</radius>
+              <length>0.1</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>0 0 0 1</ambient>
+            <diffuse>0 0 0 1</diffuse>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='airspeed_joint' type='fixed'>
+        <child>airspeed</child>
+        <parent>base_link</parent>
+      </joint>
+      <link name='rotor_puller'>
+        <pose>0.22 0 0 3.14159 1.57079 3.14159</pose>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.005</mass>
+          <inertia>
+            <ixx>9.75e-07</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.000166704</iyy>
+            <iyz>0</iyz>
+            <izz>0.000167604</izz>
+          </inertia>
+        </inertial>
+        <collision name='rotor_puller_collision'>
+          <pose>0 0 0 3.14159 -1.57079 3.14159</pose>
+          <geometry>
+            <box>
+              <size>0.005 0.22 0.02</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='rotor_puller_visual'>
+          <pose>0 0 0 0 0 -1.5708</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>https://fuel.ignitionrobotics.org/1.0/px4/models/rc_cessna/1/files/meshes/iris_prop_ccw.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='rotor_puller_joint' type='revolute'>
+        <child>rotor_puller</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='left_elevon'>
+        <inertial>
+          <mass>1e-08</mass>
+          <inertia>
+            <ixx>1e-06</ixx>
+            <ixy>0</ixy>
+            <iyy>1e-06</iyy>
+            <ixz>0</ixz>
+            <iyz>0</iyz>
+            <izz>1e-06</izz>
+          </inertia>
+          <pose>0 0.3 0 0 -0 0</pose>
+        </inertial>
+        <visual name='left_elevon_visual'>
+          <pose>0.07 0 -0.08 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>0.1 0.1 0.1</scale>
+              <uri>https://fuel.ignitionrobotics.org/1.0/px4/models/rc_cessna/1/files/meshes/left_aileron.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <link name='LeftWheel'>
+        <pose relative_to='LeftWheelJoint'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <mass>0.05</mass>
+          <inertia>
+            <ixx>3.331e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>2.04e-05</iyy>
+            <iyz>0</iyz>
+            <izz>2.04e-05</izz>
+          </inertia>
+          <pose>0 0 0 0 -0 0</pose>
+        </inertial>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <visual name='LeftWheelVisual'>
+          <pose>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.01</length>
+              <radius>0.03</radius>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name='LeftWheelCollision'>
+          <pose>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.01</length>
+              <radius>0.03</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>0.5</mu2>
+                <fdir1>0 0 1</fdir1>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <link name='RightWheel'>
+        <pose relative_to='RightWheelJoint'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <mass>0.05</mass>
+          <inertia>
+            <ixx>3.331e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>2.04e-05</iyy>
+            <iyz>0</iyz>
+            <izz>2.04e-05</izz>
+          </inertia>
+          <pose>0 0 0 0 -0 0</pose>
+        </inertial>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <visual name='RightWheelVisual'>
+          <pose>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.01</length>
+              <radius>0.03</radius>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name='RightWheelCollision'>
+          <pose>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.01</length>
+              <radius>0.03</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>0.5</mu2>
+                <fdir1>0 0 1</fdir1>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <link name='CenterWheel'>
+        <pose relative_to='CenterWheelJoint'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <mass>0.05</mass>
+          <inertia>
+            <ixx>3.331e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>2.04e-05</iyy>
+            <iyz>0</iyz>
+            <izz>2.04e-05</izz>
+          </inertia>
+          <pose>0 0 0 0 -0 0</pose>
+        </inertial>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <visual name='CenterWheelVisual'>
+          <pose>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.01</length>
+              <radius>0.025</radius>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name='CenterWheelCollision'>
+          <pose>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.01</length>
+              <radius>0.025</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>0.5</mu2>
+                <fdir1>0 0 1</fdir1>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <link name='right_elevon'>
+        <inertial>
+          <mass>1e-08</mass>
+          <inertia>
+            <ixx>1e-06</ixx>
+            <ixy>0</ixy>
+            <iyy>1e-06</iyy>
+            <ixz>0</ixz>
+            <iyz>0</iyz>
+            <izz>1e-06</izz>
+          </inertia>
+          <pose>0 -0.3 0 0 -0 0</pose>
+        </inertial>
+        <visual name='right_elevon_visual'>
+          <pose>0.07 0 -0.08 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>0.1 0.1 0.1</scale>
+              <uri>https://fuel.ignitionrobotics.org/1.0/px4/models/rc_cessna/1/files/meshes/right_aileron.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <link name='left_flap'>
+        <inertial>
+          <mass>1e-08</mass>
+          <inertia>
+            <ixx>1e-06</ixx>
+            <ixy>0</ixy>
+            <iyy>1e-06</iyy>
+            <ixz>0</ixz>
+            <iyz>0</iyz>
+            <izz>1e-06</izz>
+          </inertia>
+          <pose>0 0.15 0 0 -0 0</pose>
+        </inertial>
+        <visual name='left_flap_visual'>
+          <pose>0.07 0 -0.08 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>0.1 0.1 0.1</scale>
+              <uri>https://fuel.ignitionrobotics.org/1.0/px4/models/rc_cessna/1/files/meshes/left_flap.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <link name='right_flap'>
+        <inertial>
+          <mass>1e-08</mass>
+          <inertia>
+            <ixx>1e-06</ixx>
+            <ixy>0</ixy>
+            <iyy>1e-06</iyy>
+            <ixz>0</ixz>
+            <iyz>0</iyz>
+            <izz>1e-06</izz>
+          </inertia>
+          <pose>0 -0.15 0 0 -0 0</pose>
+        </inertial>
+        <visual name='right_flap_visual'>
+          <pose>0.07 0 -0.08 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>0.1 0.1 0.1</scale>
+              <uri>https://fuel.ignitionrobotics.org/1.0/px4/models/rc_cessna/1/files/meshes/right_flap.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <link name='elevator'>
+        <inertial>
+          <mass>1e-08</mass>
+          <inertia>
+            <ixx>1e-06</ixx>
+            <ixy>0</ixy>
+            <iyy>1e-06</iyy>
+            <ixz>0</ixz>
+            <iyz>0</iyz>
+            <izz>1e-06</izz>
+          </inertia>
+          <pose>-0.5 0 0 0 -0 0</pose>
+        </inertial>
+        <visual name='elevator_visual'>
+          <pose>0.07 0 -0.08 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>0.1 0.1 0.1</scale>
+              <uri>https://fuel.ignitionrobotics.org/1.0/px4/models/rc_cessna/1/files/meshes/elevators.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <link name='rudder'>
+        <inertial>
+          <mass>1e-08</mass>
+          <inertia>
+            <ixx>1e-06</ixx>
+            <ixy>0</ixy>
+            <iyy>1e-06</iyy>
+            <ixz>0</ixz>
+            <iyz>0</iyz>
+            <izz>1e-06</izz>
+          </inertia>
+          <pose>-0.5 0 0.05 0 -0 0</pose>
+        </inertial>
+        <visual name='rudder_visual'>
+          <pose>0.07 0 -0.08 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>0.1 0.1 0.1</scale>
+              <uri>https://fuel.ignitionrobotics.org/1.0/px4/models/rc_cessna/1/files/meshes/rudder.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='servo_0' type='revolute'>
+        <parent>base_link</parent>
+        <child>left_elevon</child>
+        <pose>-0.07 0.4 0.08 0 -0 0</pose>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-0.78</lower>
+            <upper>0.78</upper>
+          </limit>
+          <dynamics>
+            <damping>1</damping>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+            <limit>
+              <cfm>0</cfm>
+              <erp>0.2</erp>
+            </limit>
+          </ode>
+        </physics>
+      </joint>
+      <joint name='servo_1' type='revolute'>
+        <parent>base_link</parent>
+        <child>right_elevon</child>
+        <pose>-0.07 -0.4 0.08 0 -0 0</pose>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-0.78</lower>
+            <upper>0.78</upper>
+          </limit>
+          <dynamics>
+            <damping>1</damping>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+            <limit>
+              <cfm>0</cfm>
+              <erp>0.2</erp>
+            </limit>
+          </ode>
+        </physics>
+      </joint>
+      <joint name='left_flap_joint' type='revolute'>
+        <parent>base_link</parent>
+        <child>left_flap</child>
+        <pose>-0.07 0.2 0.08 0 -0 0</pose>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-0.78</lower>
+            <upper>0.78</upper>
+          </limit>
+          <dynamics>
+            <damping>1</damping>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+            <limit>
+              <cfm>0</cfm>
+              <erp>0.2</erp>
+            </limit>
+          </ode>
+        </physics>
+      </joint>
+      <joint name='right_flap_joint' type='revolute'>
+        <parent>base_link</parent>
+        <child>right_flap</child>
+        <pose>-0.07 -0.2 0.08 0 -0 0</pose>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-0.78</lower>
+            <upper>0.78</upper>
+          </limit>
+          <dynamics>
+            <damping>1</damping>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+            <limit>
+              <cfm>0</cfm>
+              <erp>0.2</erp>
+            </limit>
+          </ode>
+        </physics>
+      </joint>
+      <joint name='servo_2' type='revolute'>
+        <parent>base_link</parent>
+        <child>elevator</child>
+        <pose>-0.5 0 0 0 -0 0</pose>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-0.78</lower>
+            <upper>0.78</upper>
+          </limit>
+          <dynamics>
+            <damping>1</damping>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+            <limit>
+              <cfm>0</cfm>
+              <erp>0.2</erp>
+            </limit>
+          </ode>
+        </physics>
+      </joint>
+      <joint name='rudder_joint' type='revolute'>
+        <parent>base_link</parent>
+        <child>rudder</child>
+        <pose>-0.5 0 0.05 0 -0 0</pose>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-0.78</lower>
+            <upper>0.78</upper>
+          </limit>
+          <dynamics>
+            <damping>1</damping>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+            <limit>
+              <cfm>0</cfm>
+              <erp>0.2</erp>
+            </limit>
+          </ode>
+        </physics>
+      </joint>
+      <joint name='LeftWheelJoint' type='revolute'>
+        <parent>base_link</parent>
+        <child>LeftWheel</child>
+        <pose relative_to='base_link'>-0.035 0.13 -0.12 0 -0 0</pose>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1.79769e+308</lower>
+            <upper>1.79769e+308</upper>
+          </limit>
+          <dynamics>
+            <friction>0.02</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <joint name='RightWheelJoint' type='revolute'>
+        <parent>base_link</parent>
+        <child>RightWheel</child>
+        <pose relative_to='base_link'>-0.035 -0.13 -0.12 0 -0 0</pose>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1.79769e+308</lower>
+            <upper>1.79769e+308</upper>
+          </limit>
+          <dynamics>
+            <friction>0.02</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <joint name='CenterWheelJoint' type='revolute'>
+        <parent>base_link</parent>
+        <child>CenterWheel</child>
+        <pose relative_to='base_link'>0.135 0 -0.12 0 -0 0</pose>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1.79769e+308</lower>
+            <upper>1.79769e+308</upper>
+          </limit>
+          <dynamics>
+            <friction>0.02</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      
+<plugin name='left_wing' filename='libLiftDragPlugin.so'>
+        <a0>0.03</a0>
+        <cla>4.7527</cla>
+        <cda>0.6417</cda>
+        <alpha_stall>0.3391</alpha_stall>
+        <cla_stall>-3.85</cla_stall>
+        <cda_stall>-0.9233</cda_stall>
+        <cp>-0.15 0.45 0.05</cp>
+        <area>0.2</area>
+        <air_density>1.2041</air_density>
+        <forward>1 0 0</forward>
+        <upward>0 0 1</upward>
+        <link_name>base_link</link_name>
+        <control_joint_name>servo_0</control_joint_name>
+        <control_joint_rad_to_cl>-2.0</control_joint_rad_to_cl>
+      </plugin>
+
+      <plugin name='right_wing' filename='libLiftDragPlugin.so'>
+        <a0>0.03</a0>
+        <cla>4.7527</cla>
+        <cda>0.6417</cda>
+        <alpha_stall>0.3391</alpha_stall>
+        <cla_stall>-3.85</cla_stall>
+        <cda_stall>-0.9233</cda_stall>
+        <cp>-0.15 -0.45 0.05</cp>
+        <area>0.2</area>
+        <air_density>1.2041</air_density>
+        <forward>1 0 0</forward>
+        <upward>0 0 1</upward>
+        <link_name>base_link</link_name>
+        <control_joint_name>servo_1</control_joint_name>
+        <control_joint_rad_to_cl>-2.0</control_joint_rad_to_cl>
+      </plugin>
+
+      <plugin name='elevator' filename='libLiftDragPlugin.so'>
+        <a0>-0.02</a0>
+        <cla>4.7527</cla>
+        <cda>0.6417</cda>
+        <alpha_stall>0.3391</alpha_stall>
+        <cla_stall>-3.85</cla_stall>
+        <cda_stall>-0.9233</cda_stall>
+        <cp>-0.7 0 0</cp>
+        <area>0.08</area>
+        <air_density>1.2041</air_density>
+        <forward>1 0 0</forward>
+        <upward>0 0 1</upward>
+        <link_name>base_link</link_name>
+        <control_joint_name>servo_2</control_joint_name>
+        <control_joint_rad_to_cl>-4.0</control_joint_rad_to_cl>
+      </plugin>
+
+      <plugin name='rudder' filename='libLiftDragPlugin.so'>
+        <a0>0.0</a0>
+        <cla>4.7527</cla>
+        <cda>0.6417</cda>
+        <alpha_stall>0.3391</alpha_stall>
+        <cla_stall>-3.85</cla_stall>
+        <cda_stall>-0.9233</cda_stall>
+        <cp>-0.5 0 0.05</cp>
+        <area>0.1</area>
+        <air_density>1.2041</air_density>
+        <forward>1 0 0</forward>
+        <upward>0 1 0</upward>
+        <link_name>base_link</link_name>
+        <control_joint_name>rudder_joint</control_joint_name>
+        <control_joint_rad_to_cl>4.0</control_joint_rad_to_cl>
+      </plugin>
+
+      <plugin name='propeller_motor' filename='libSimpleMotorPlugin.so'>
+        <joint>rotor_puller_joint</joint>
+        <max_torque>5</max_torque>
+      </plugin>
+
+      <static>0</static>
+      <plugin name="udp_control" filename="libudp_control_plugin.so"/>
+    </model>
+
+    <state world_name='default'>
+      <sim_time>231 542000000</sim_time>
+      <real_time>239 499695754</real_time>
+      <wall_time>1768430751 800525842</wall_time>
+      <iterations>231542</iterations>
+      <model name='ground_plane'>
+        <pose>0 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='rc_cessna'>
+        <pose>0.407412 -0.00957 0.148919 -3e-06 0.029429 0.031855</pose>
+        <scale>1 1 1</scale>
+        <link name='CenterWheel'>
+          <pose>0.538756 -0.005384 0.024999 -1.3e-05 0.53546 0.031844</pose>
+          <velocity>-7.7e-05 1.1e-05 -0.000751 0.002298 0.002516 0.001801</velocity>
+          <acceleration>-0.273709 -0.066437 -1.52345 0.662439 1.44365 -1.67618</acceleration>
+          <wrench>-0.013685 -0.003322 -0.076173 0 -0 0</wrench>
+        </link>
+        <link name='LeftWheel'>
+          <pose>0.364776 0.119137 0.03 -5e-05 -0.308462 0.031875</pose>
+          <velocity>-0.000162 -7.4e-05 8.4e-05 0.002678 -0.00515 -0.000485</velocity>
+          <acceleration>-0.235743 -0.070261 0.180557 2.86126 -0.914746 -2.96668</acceleration>
+          <wrench>-0.011787 -0.003513 0.009028 0 -0 0</wrench>
+        </link>
+        <link name='RightWheel'>
+          <pose>0.373056 -0.14073 0.03 1.6e-05 0.094877 0.031857</pose>
+          <velocity>-6e-06 -3.4e-05 9.5e-05 0.001032 5e-05 0.001245</velocity>
+          <acceleration>-0.243273 0.000299 0.179738 0.085945 -1.20337 2.17452</acceleration>
+          <wrench>-0.012164 1.5e-05 0.008987 0 -0 0</wrench>
+        </link>
+        <link name='airspeed'>
+          <pose>0.407412 -0.00957 0.148919 -3e-06 0.029429 0.031855</pose>
+          <velocity>0.000157 -9.5e-05 -0.000156 0.000261 0.002455 0.000631</velocity>
+          <acceleration>0.080748 -0.035947 -0.333959 2.93842 -1.08985 3.10437</acceleration>
+          <wrench>0.001211 -0.000539 -0.005009 0 -0 0</wrench>
+        </link>
+        <link name='base_link'>
+          <pose>0.407412 -0.00957 0.148919 -3e-06 0.029429 0.031855</pose>
+          <velocity>0.000156 -9.5e-05 -0.000156 0.000262 0.002451 0.000631</velocity>
+          <acceleration>0.079315 -0.036086 -0.335096 2.90279 -1.08205 3.10335</acceleration>
+          <wrench>0.118972 -0.05413 -0.502644 0 -0 0</wrench>
+        </link>
+        <link name='elevator'>
+          <pose>0.407415 -0.009569 0.149024 -3e-06 0.02922 0.031855</pose>
+          <velocity>0.000157 -9.5e-05 -0.000151 0.000261 0.002447 0.000631</velocity>
+          <acceleration>0.142475 -0.014358 1.78307 2.93873 -1.07994 3.10437</acceleration>
+          <wrench>0 -0 0 0 -0 0</wrench>
+        </link>
+        <link name='left_elevon'>
+          <pose>0.407429 -0.009569 0.148933 -3e-06 0.02922 0.031855</pose>
+          <velocity>0.000158 -9.5e-05 -0.000154 0.000261 0.002447 0.000631</velocity>
+          <acceleration>0.095284 -0.035584 -0.351691 2.93873 -1.07994 3.10437</acceleration>
+          <wrench>0 -0 -0 0 -0 0</wrench>
+        </link>
+        <link name='left_flap'>
+          <pose>0.407429 -0.009569 0.148933 -3e-06 0.02922 0.031855</pose>
+          <velocity>0.000158 -9.5e-05 -0.000154 0.000261 0.002447 0.000631</velocity>
+          <acceleration>0.089706 -0.035762 -0.341508 2.93873 -1.07994 3.10437</acceleration>
+          <wrench>0 -0 -0 0 -0 0</wrench>
+        </link>
+        <link name='right_elevon'>
+          <pose>0.407429 -0.009569 0.148933 -3e-06 0.02922 0.031855</pose>
+          <velocity>0.000158 -9.5e-05 -0.000154 0.000261 0.002447 0.000631</velocity>
+          <acceleration>0.072971 -0.036294 -0.310961 2.93873 -1.07994 3.10437</acceleration>
+          <wrench>0 -0 -0 0 -0 0</wrench>
+        </link>
+        <link name='right_flap'>
+          <pose>0.407429 -0.009569 0.148933 -3e-06 0.02922 0.031855</pose>
+          <velocity>0.000158 -9.5e-05 -0.000154 0.000261 0.002447 0.000631</velocity>
+          <acceleration>0.07855 -0.036116 -0.321143 2.93873 -1.07994 3.10437</acceleration>
+          <wrench>0 -0 -0 0 -0 0</wrench>
+        </link>
+        <link name='rotor_puller'>
+          <pose>0.627205 -0.002566 0.142445 -2.85872 1.54014 -2.82674</pose>
+          <velocity>0.000136 4.6e-05 -0.000693 -0.000174 0.002441 0.000638</velocity>
+          <acceleration>0.053669 -0.045439 -1.2654 3.07935 -1.07182 1.00667</acceleration>
+          <wrench>0.000268 -0.000227 -0.006327 0 -0 0</wrench>
+        </link>
+        <link name='rudder'>
+          <pose>0.407412 -0.009575 0.148919 -3e-06 0.029429 0.031844</pose>
+          <velocity>0.000154 -9.6e-05 -0.000158 0.000265 0.002437 0.000631</velocity>
+          <acceleration>0.345217 -0.004836 1.75256 2.93801 -1.05105 3.10465</acceleration>
+          <wrench>0 -0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <light name='sun'>
+        <pose>0 0 10 0 -0 0</pose>
+      </light>
+    </state>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose>5.96732 1.85468 3.61295 0 0.543643 -2.62699</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+  </world>
+</sdf>
