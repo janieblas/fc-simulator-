@@ -17,122 +17,68 @@ namespace gazebo
   {
     private: 
       physics::ModelPtr model;
-      physics::LinkPtr bodyLink;
       event::ConnectionPtr updateConnection;
       
+      physics::JointPtr motorJoint;
+      physics::JointPtr servo0Joint;
+      physics::JointPtr servo1Joint;
+      physics::JointPtr servo2Joint;
+      physics::JointPtr rudderJoint;
+      physics::JointPtr leftFlapJoint;
+      physics::JointPtr rightFlapJoint;
+
       int sockfd;
       std::thread udpThread;
       std::atomic<bool> running;
       
-      // Valores de control del RadioMaster
-      std::atomic<float> throttle;
-      std::atomic<float> aileron;
-      std::atomic<float> elevator;
-      std::atomic<float> rudder;
+      std::atomic<float> throttle{0}, aileron{0}, elevator{0}, rudder{0};
 
     public: 
-      UDPControlPlugin() : running(false), throttle(0), aileron(0), elevator(0), rudder(0)
-      {
-        std::cout << "[UDP Control Plugin] Construido" << std::endl;
-      }
+      UDPControlPlugin() : running(false) {}
 
       void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
       {
         this->model = _model;
         
-        // Obtener el link principal del modelo
-        this->bodyLink = this->model->GetLink("rc_cessna::base_link");
-        if (!this->bodyLink)
-        {
-          // Intentar con otro nombre común
-          this->bodyLink = this->model->GetLink("base_link");
-        }
-        
-        if (!this->bodyLink)
-        {
-          std::cerr << "[UDP Control Plugin] ERROR: No se encontró el link 'body'" << std::endl;
-          std::cerr << "Links disponibles:" << std::endl;
-          auto links = this->model->GetLinks();
-          for (auto link : links)
-          {
-            std::cerr << "  - " << link->GetName() << std::endl;
-          }
-          return;
-        }
-        
-        std::cout << "[UDP Control Plugin] Link encontrado: " << this->bodyLink->GetName() << std::endl;
-        
-        // Crear socket UDP
+        this->motorJoint = this->model->GetJoint("rotor_puller_joint");
+        this->servo0Joint = this->model->GetJoint("servo_0");
+        this->servo1Joint = this->model->GetJoint("servo_1");
+        this->servo2Joint = this->model->GetJoint("servo_2");
+        this->rudderJoint = this->model->GetJoint("rudder_joint");
+        this->leftFlapJoint = this->model->GetJoint("left_flap_joint");
+        this->rightFlapJoint = this->model->GetJoint("right_flap_joint");
+
         sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-        if (sockfd < 0)
-        {
-          std::cerr << "[UDP Control Plugin] ERROR: No se pudo crear el socket" << std::endl;
-          return;
-        }
-        
-        // Configurar socket para no bloquearse
-        struct timeval tv;
-        tv.tv_sec = 0;
-        tv.tv_usec = 10000; // 10ms timeout
-        setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
-        
-        // Configurar dirección del servidor (escuchar en puerto 5006)
         struct sockaddr_in servaddr;
         memset(&servaddr, 0, sizeof(servaddr));
         servaddr.sin_family = AF_INET;
         servaddr.sin_addr.s_addr = INADDR_ANY;
         servaddr.sin_port = htons(5006);
+        bind(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
         
-        if (bind(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0)
-        {
-          std::cerr << "[UDP Control Plugin] ERROR: No se pudo hacer bind al puerto 5006" << std::endl;
-          close(sockfd);
-          return;
-        }
-        
-        std::cout << "[UDP Control Plugin] Escuchando en puerto 5006 UDP" << std::endl;
-        
-        // Iniciar thread para recibir datos UDP
         running = true;
         udpThread = std::thread(&UDPControlPlugin::ReceiveUDP, this);
+        this->updateConnection = event::Events::ConnectWorldUpdateBegin(std::bind(&UDPControlPlugin::OnUpdate, this));
         
-        // Conectar al update loop de Gazebo
-        this->updateConnection = event::Events::ConnectWorldUpdateBegin(
-            std::bind(&UDPControlPlugin::OnUpdate, this));
-        
-        std::cout << "[UDP Control Plugin] Plugin cargado correctamente" << std::endl;
+        std::cout << "[UDP Plugin t10] Sistema de Actuadores listo" << std::endl;
       }
       
       void ReceiveUDP()
       {
         char buffer[1024];
-        
         while(running)
         {
           int n = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
-          
           if (n > 0)
           {
-            buffer[n] = '\0'; // Null terminator
-            
-            // Parsear datos: "T:0.75,A:0.20,E:-0.10,R:0.05"
+            buffer[n] = '\0';
             float t, a, e, r;
-            int parsed = sscanf(buffer, "T:%f,A:%f,E:%f,R:%f", &t, &a, &e, &r);
-            
-            if (parsed == 4)
+            if (sscanf(buffer, "T:%f,A:%f,E:%f,R:%f", &t, &a, &e, &r) == 4)
             {
-              throttle.store(t);
-              aileron.store(a);
-              elevator.store(e);
+              throttle.store(t); 
+              aileron.store(a); 
+              elevator.store(e); 
               rudder.store(r);
-              
-              // Debug cada 50 mensajes (1 segundo a 50Hz)
-              static int count = 0;
-              if (++count % 50 == 0)
-              {
-                std::cout << "[UDP Control Plugin] Recibido: T=" << t 
-                          << " A=" << a << " E=" << e << " R=" << r << std::endl;
-              }
             }
           }
         }
@@ -140,49 +86,39 @@ namespace gazebo
       
       void OnUpdate()
       {
-        if (!this->bodyLink) return;
-        
-        // Leer valores atómicos
         float t = throttle.load();
-        float a = aileron.load();
-        float e = elevator.load();
-        float r = rudder.load();
-        
-        // THROTTLE: Fuerza hacia adelante (en el eje X local del avión)
-        // Mapear de [-1,1] a [0, 200] Newtons
-        float forwardForce = 0.0f;
-	if(t > 0.0f){
-	    forwardForce = t * 150.0f; // De 0 a 300N cuando t va de 0 a 1
-	}
-        
-        ignition::math::Vector3d thrustForce(forwardForce, 0, 0);
-        this->bodyLink->AddRelativeForce(thrustForce);
-        
-        // CONTROLES DE VUELO: Torques para rotación
-        // Ajusta estos valores según el comportamiento deseado
-        float rollTorque = a * 4.0f;   // Aileron → Roll (eje X)
-        float pitchTorque = e * 4.0f;  // Elevator → Pitch (eje Y)
-        float yawTorque = r * 2.0f;    // Rudder → Yaw (eje Z)
-        
-        ignition::math::Vector3d controlTorque(rollTorque, pitchTorque, yawTorque);
-        this->bodyLink->AddRelativeTorque(controlTorque);
+        float vA = aileron.load();
+        float vE = elevator.load();
+        float vR = rudder.load();
+
+        if (t < 0) t = 0; 
+
+        physics::LinkPtr baseLink = this->model->GetLink("base_link");
+        if (!baseLink) return;
+
+        if (this->motorJoint) {
+            this->motorJoint->SetVelocity(0, t * 400.0); 
+            ignition::math::Vector3d fuerza(t * 12.5, 0, 0); 
+            ignition::math::Vector3d puntoAplicacion(0.1, 0, 0.1); 
+            baseLink->AddLinkForce(fuerza, puntoAplicacion);
+        }  
+
+        float maxRad = 0.5; 
+        if (servo0Joint) servo0Joint->SetPosition(0, -vA * maxRad); 
+        if (servo1Joint) servo1Joint->SetPosition(0, vA * maxRad);  
+        if (servo2Joint) servo2Joint->SetPosition(0, -vE * maxRad);  
+        if (rudderJoint) rudderJoint->SetPosition(0, vR * maxRad); 
+
+        if (leftFlapJoint) leftFlapJoint->SetPosition(0, -vA * maxRad);
+        if (rightFlapJoint) rightFlapJoint->SetPosition(0, vA * maxRad);
       }
-      
+
       ~UDPControlPlugin()
       {
         running = false;
-        if (udpThread.joinable())
-        {
-          udpThread.join();
-        }
-        if (sockfd >= 0)
-        {
-          close(sockfd);
-        }
-        std::cout << "[UDP Control Plugin] Plugin destruido" << std::endl;
+        if (udpThread.joinable()) udpThread.join();
+        if (sockfd >= 0) close(sockfd);
       }
   };
-  
-  // Registrar el plugin con Gazebo
   GZ_REGISTER_MODEL_PLUGIN(UDPControlPlugin)
 }
